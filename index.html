@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colombo Vacant Land WebGIS</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #24313b;
+    }
+
+    header {
+      background: #173f35;
+      color: white;
+      padding: 16px 20px;
+    }
+
+    header h1 {
+      margin: 0 0 6px;
+      font-size: 23px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    #toolbar {
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      background: #f2f5f3;
+    }
+
+    input, button {
+      padding: 9px;
+      font-size: 14px;
+    }
+
+    #status {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    #map {
+      height: 72vh;
+      min-height: 420px;
+      width: 100%;
+    }
+
+    footer {
+      padding: 12px;
+      background: #f2f5f3;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Colombo Vacant Land WebGIS</h1>
+    <p>Interactive mapping for urban planning and redevelopment</p>
+  </header>
+
+  <div id="toolbar">
+    <input
+      id="search"
+      type="text"
+      placeholder="Search parcel attributes..."
+    />
+
+    <button id="reset">Show all parcels</button>
+
+    <strong id="count">Loading parcels...</strong>
+  </div>
+
+  <div id="status">Loading vacant-land data...</div>
+  <div id="map"></div>
+
+  <footer>
+    Vacant-land mapping for planning and research.
+    Please verify site information before making planning decisions.
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    const map = L.map("map").setView([6.9271, 79.8612], 12);
+
+    const streets = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution: "&copy; OpenStreetMap contributors"
+      }
+    ).addTo(map);
+
+    const satellite = L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        attribution: "Tiles &copy; Esri"
+      }
+    );
+
+    L.control.layers({
+      "Street Map": streets,
+      "Satellite Imagery": satellite
+    }).addTo(map);
+
+    let allFeatures = [];
+    let parcelLayer = L.geoJSON(null, {
+      style: {
+        color: "#176b45",
+        weight: 1.2,
+        fillColor: "#38a169",
+        fillOpacity: 0.55
+      },
+      onEachFeature: function(feature, layer) {
+        const properties = feature.properties || {};
+        let popup = "<b>Vacant Land Parcel</b><br>";
+
+        Object.entries(properties).forEach(([key, value]) => {
+          if (value !== null && value !== "") {
+            popup +=
+              "<b>" + escapeHtml(key) + ":</b> " +
+              escapeHtml(String(value)) + "<br>";
+          }
+        });
+
+        layer.bindPopup(popup);
+      }
+    }).addTo(map);
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, function(char) {
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[char];
+      });
+    }
+
+    function displayFeatures(features) {
+      parcelLayer.clearLayers();
+      parcelLayer.addData({
+        type: "FeatureCollection",
+        features: features
+      });
+
+      document.getElementById("count").textContent =
+        "Parcels shown: " + features.length;
+
+      if (features.length > 0) {
+        const bounds = parcelLayer.getBounds();
+        if (bounds.isValid()) {
+          map.fitBounds(bounds, { padding: [20, 20] });
+        }
+      }
+    }
+
+    fetch("data/vacant_land.geojson")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Could not find the GeoJSON file.");
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.type !== "FeatureCollection" ||
+            !Array.isArray(data.features)) {
+          throw new Error("The file is not a valid GeoJSON FeatureCollection.");
+        }
+
+        allFeatures = data.features;
+        displayFeatures(allFeatures);
+
+        document.getElementById("status").textContent =
+          "Vacant-land data loaded successfully.";
+      })
+      .catch(error => {
+        document.getElementById("status").textContent =
+          "Data loading failed: " + error.message +
+          " Check the GeoJSON filename and folder.";
+        document.getElementById("count").textContent =
+          "No parcels loaded";
+      });
+
+    document.getElementById("search").addEventListener("input", function() {
+      const query = this.value.toLowerCase().trim();
+
+      const filtered = allFeatures.filter(feature => {
+        return JSON.stringify(feature.properties || {})
+          .toLowerCase()
+          .includes(query);
+      });
+
+      displayFeatures(filtered);
+    });
+
+    document.getElementById("reset").addEventListener("click", function() {
+      document.getElementById("search").value = "";
+      displayFeatures(allFeatures);
+    });
+  </script>
+</body>
+</html>
