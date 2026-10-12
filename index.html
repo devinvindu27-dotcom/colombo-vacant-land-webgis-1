@@ -171,7 +171,7 @@
       }
     }
 
-    fetch("data/vacant_land.geojson")
+    fetch("vacant_land.geojson")
       .then(response => {
         if (!response.ok) {
           throw new Error("Could not find the GeoJSON file.");
