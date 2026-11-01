@@ -2,7 +2,6 @@
 "type": "FeatureCollection",
 "name": "railway_stations",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
 "features": [
 {"type":"Feature","properties":{"objectid":2012,"creation_method":"9","year_of_creation":"2015","revision_method":null,"year_of_revision":null,"gfcode":"RLCPP","description":null,"railway_infrastructure_type":"RLCPP","name":null},"geometry":{"type":"Point","coordinates":[79.884502055000041,6.912990241000045]}},
 {"type":"Feature","properties":{"objectid":2015,"creation_method":"9","year_of_creation":"2015","revision_method":null,"year_of_revision":null,"gfcode":"RLCPP","description":null,"railway_infrastructure_type":"RLCPP","name":null},"geometry":{"type":"Point","coordinates":[79.88388205800004,6.914661627000044]}},
