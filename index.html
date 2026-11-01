@@ -1,47 +1,145 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Colombo Vacant Land | Interactive Web GIS</title>
+<title>Colombo Vacant Land Web GIS</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f2f5f3;color:#20352c}
-header{background:#153d32;color:white;padding:17px 4%;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:21px;font-weight:bold}
-.header-small{font-size:11px;color:#c5dfd3;margin-top:5px}
-.hero{padding:32px 4%;background:linear-gradient(110deg,#174d3c,#478b64);color:white}
-.hero h1{margin:8px 0;font-size:30px}
-.hero p{max-width:720px;line-height:1.6}
-.container{padding:22px 4%}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.card,.panel{background:white;border-radius:12px;padding:18px;box-shadow:0 2px 10px #0000000b}
-.card small{color:#718078}
-.card h2{color:#176548;margin:10px 0 0;font-size:25px}
-.workspace{display:grid;grid-template-columns:270px 1fr;gap:16px}
-.panel h3{margin-top:0}
-input,select{width:100%;padding:10px;border:1px solid #d5ded8;border-radius:7px;margin:7px 0 13px}
-button{background:#176548;color:white;border:0;padding:10px 14px;border-radius:7px;cursor:pointer}
-button:hover{background:#10432f}
-.layer{display:block;margin:13px 0;font-size:14px}
-.layer input{width:auto;margin-right:7px}
-.legend{display:flex;align-items:center;gap:9px;margin:10px 0;font-size:13px}
-.color{height:15px;width:20px;border-radius:3px}
-#map{height:610px;border-radius:10px}
-.status{font-size:12px;color:#6b7b72;line-height:1.5;margin-top:15px}
-.section-title{margin:25px 0 13px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-td,th{padding:10px;border-bottom:1px solid #e8eee9;text-align:left}
-footer{text-align:center;padding:24px;color:#708078;font-size:12px}
-@media(max-width:800px){
-.stats{grid-template-columns:repeat(2,1fr)}
-.workspace{grid-template-columns:1fr}
-#map{height:480px}
-header{gap:10px;flex-wrap:wrap}
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #243247;
+}
+
+header {
+    background: #123b50;
+    color: white;
+    padding: 18px 25px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 23px;
+}
+
+header p {
+    margin: 7px 0 0;
+    color: #d8e5eb;
+    font-size: 13px;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 15px;
+}
+
+.stat {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 7px #00000012;
+}
+
+.stat small { color: #667788; }
+.stat h2 { margin: 8px 0 0; color: #176b62; }
+
+.main {
+    display: grid;
+    grid-template-columns: 270px 1fr;
+    gap: 12px;
+    padding: 0 15px 15px;
+}
+
+.sidebar, .map-panel {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 7px #00000012;
+}
+
+.sidebar { padding: 17px; }
+
+.sidebar h3 {
+    margin-top: 5px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.section { margin: 18px 0; }
+
+.section label {
+    display: block;
+    margin: 12px 0;
+    font-size: 14px;
+}
+
+.section input { margin-right: 8px; }
+
+select, input[type="text"] {
+    width: 100%;
+    padding: 9px;
+    border: 1px solid #ccd4da;
+    border-radius: 5px;
+    margin-top: 7px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #176b62;
+    color: white;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+button:hover { background: #10554e; }
+
+#map {
+    height: 690px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.map-panel { padding: 8px; }
+
+.status {
+    font-size: 12px;
+    line-height: 1.7;
+    color: #526477;
+    margin-top: 15px;
+    overflow-wrap: anywhere;
+}
+
+.legend {
+    background: white;
+    padding: 10px;
+    line-height: 1.8;
+    border-radius: 5px;
+}
+
+.dot {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    margin-right: 7px;
+}
+
+@media(max-width: 800px) {
+    .dashboard { grid-template-columns: repeat(2, 1fr); }
+    .main { grid-template-columns: 1fr; }
+    #map { height: 550px; }
 }
 </style>
 </head>
@@ -49,479 +147,537 @@ header{gap:10px;flex-wrap:wrap}
 <body>
 
 <header>
-  <div>
-    <div class="logo">◈ Colombo Vacant Land</div>
-    <div class="header-small">INTERACTIVE WEB GIS & REDEVELOPMENT ANALYSIS</div>
-  </div>
-  <div>COLOMBO DISTRICT | SRI LANKA</div>
+    <h1>Colombo Vacant Land – Interactive Web GIS</h1>
+    <p>Mapping, Analysis and Redevelopment Opportunities in Colombo District, Sri Lanka</p>
 </header>
 
-<section class="hero">
-  <div>URBAN LAND MANAGEMENT & SPATIAL PLANNING</div>
-  <h1>Mapping Vacant Lands in Colombo</h1>
-  <p>
-    Explore vacant land parcels, their spatial distribution,
-    surrounding population, transport accessibility and
-    potential redevelopment opportunities across Colombo District.
-  </p>
-</section>
+<div class="dashboard">
+    <div class="stat">
+        <small>Total Vacant Land Parcels</small>
+        <h2 id="parcelCount">Loading...</h2>
+    </div>
+    <div class="stat">
+        <small>Total Vacant Land Area (ha)</small>
+        <h2 id="totalArea">Loading...</h2>
+    </div>
+    <div class="stat">
+        <small>DSD Divisions</small>
+        <h2 id="dsdCount">Loading...</h2>
+    </div>
+    <div class="stat">
+        <small>Data Status</small>
+        <h2 id="dataStatus">Loading...</h2>
+    </div>
+</div>
 
-<main class="container">
+<div class="main">
 
-<section class="stats">
-  <div class="card">
-    <small>TOTAL VACANT LAND PARCELS</small>
-    <h2 id="parcelCount">--</h2>
-  </div>
-  <div class="card">
-    <small>TOTAL VACANT LAND AREA</small>
-    <h2 id="totalArea">--</h2>
-  </div>
-  <div class="card">
-    <small>LARGEST PARCEL</small>
-    <h2 id="largestParcel">--</h2>
-  </div>
-  <div class="card">
-    <small>DSD DIVISIONS</small>
-    <h2 id="dsdCount">--</h2>
-  </div>
-</section>
+<aside class="sidebar">
 
-<section class="workspace">
+<h3>Map Layers</h3>
 
-<aside class="panel">
-  <h3>Explore vacant lands</h3>
+<div class="section">
+    <strong>Vacant Land</strong>
 
-  <label>Search vacant land / DSD</label>
-  <input id="searchBox" placeholder="Enter a DSD or GN name">
+    <label><input type="checkbox" id="vacantToggle" checked> Vacant Land Parcels</label>
+    <label><input type="checkbox" id="dsdToggle"> DSD Boundaries</label>
+    <label><input type="checkbox" id="roadsToggle"> Road Network</label>
+    <label><input type="checkbox" id="railToggle"> Railway Stations</label>
+    <label><input type="checkbox" id="busToggle"> Bus Terminals</label>
+</div>
 
-  <button onclick="searchMap()">Search</button>
-  <button onclick="resetMap()" style="background:#64766c">Reset map</button>
+<div class="section">
+    <strong>Parcel Classification</strong>
+    <label><input type="checkbox" id="smallToggle" checked> Small Parcels</label>
+    <label><input type="checkbox" id="mediumToggle" checked> Medium Parcels</label>
+    <label><input type="checkbox" id="largeToggle" checked> Large Parcels</label>
+</div>
 
-  <hr style="border:0;border-top:1px solid #e7ece8;margin:20px 0">
+<div class="section">
+    <strong>Search Vacant Land</strong>
+    <input type="text" id="searchInput" placeholder="Enter parcel ID...">
+    <button onclick="searchParcel()">Search</button>
+    <button onclick="resetMap()">Reset Map</button>
+</div>
 
-  <h3>Map layers</h3>
+<div class="section">
+    <strong>Map Legend</strong>
+    <div class="legend">
+        <div><span class="dot" style="background:#f1c40f"></span>Small</div>
+        <div><span class="dot" style="background:#e67e22"></span>Medium</div>
+        <div><span class="dot" style="background:#c0392b"></span>Large</div>
+        <div><span class="dot" style="background:#2471a3"></span>DSD Boundary</div>
+    </div>
+</div>
 
-  <label class="layer">
-    <input type="checkbox" id="vacantToggle" checked>
-    Vacant land parcels
-  </label>
+<div class="status" id="status">
+    Loading map data...
+</div>
 
-  <label class="layer">
-    <input type="checkbox" id="dsdToggle">
-    DSD boundaries
-  </label>
-
-  <label class="layer">
-    <input type="checkbox" id="roadToggle">
-    Road network
-  </label>
-
-  <label class="layer">
-    <input type="checkbox" id="railToggle">
-    Railway stations
-  </label>
-
-  <label class="layer">
-    <input type="checkbox" id="busToggle">
-    Bus terminals
-  </label>
-
-  <label class="layer">
-    <input type="checkbox" id="populationToggle">
-    Population density
-  </label>
-
-  <hr style="border:0;border-top:1px solid #e7ece8;margin:20px 0">
-
-  <h3>Vacant land size</h3>
-
-  <div class="legend">
-    <span class="color" style="background:#a5d6a7"></span> Small
-  </div>
-  <div class="legend">
-    <span class="color" style="background:#43a66b"></span> Medium
-  </div>
-  <div class="legend">
-    <span class="color" style="background:#176548"></span> Large
-  </div>
-
-  <hr style="border:0;border-top:1px solid #e7ece8;margin:20px 0">
-
-  <h3>Population density</h3>
-  <div class="legend">
-    <span class="color" style="background:#ffffb2"></span> Low
-  </div>
-  <div class="legend">
-    <span class="color" style="background:#fecc5c"></span> Moderate
-  </div>
-  <div class="legend">
-    <span class="color" style="background:#fd8d3c"></span> High
-  </div>
-  <div class="legend">
-    <span class="color" style="background:#e31a1c"></span> Very high
-  </div>
-
-  <div class="status" id="status">Loading spatial data...</div>
 </aside>
 
-<section class="panel" style="padding:10px">
-  <div id="map"></div>
-</section>
+<div class="map-panel">
+    <div id="map"></div>
+</div>
 
-</section>
-
-<h3 class="section-title">Vacant Land Planning Information</h3>
-<section class="panel">
-  <p style="font-size:14px;line-height:1.7">
-    This Web GIS supports urban planning by identifying vacant land
-    locations, comparing parcel sizes, understanding population
-    distribution and examining access to transport infrastructure.
-    These datasets can help planners identify areas for further
-    investigation and potential urban redevelopment.
-  </p>
-  <p style="font-size:12px;color:#718078">
-    Note: Redevelopment suitability requires a separate spatial
-    analysis. Vacant land alone does not establish development
-    permission or land ownership.
-  </p>
-</section>
-
-</main>
-
-<footer>
-Colombo Vacant Land Web GIS | Urban Planning & Spatial Analysis
-</footer>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
 <script>
 
-// ======================================
-// 1. CONFIGURATION - CHANGE FIELD NAMES
-// ======================================
+// ------------------------------------
+// MAP INITIALIZATION
+// ------------------------------------
 
-const DSD_FIELD = "DSD_N";
-const GN_FIELD = "GN_N";
-const AREA_FIELD = "area_hecta";
-const POP_FIELD = "Pop_Density";
+const map = L.map('map').setView([6.9271, 79.8612], 11);
 
-// Vacant land size categories in hectares
-const SMALL_LIMIT = 0.10;
-const MEDIUM_LIMIT = 0.50;
-
-// ======================================
-// 2. INITIALISE MAP
-// ======================================
-
-const map = L.map("map").setView([6.90,79.90],11);
-
-const streets = L.tileLayer(
- "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
- {attribution:"© OpenStreetMap"}
+const osm = L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { attribution: '&copy; OpenStreetMap contributors' }
 ).addTo(map);
 
 const satellite = L.tileLayer(
- "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
- {attribution:"Tiles © Esri"}
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { attribution: 'Tiles &copy; Esri' }
 );
 
 L.control.layers({
- "Street Map":streets,
- "Satellite":satellite
+    "OpenStreetMap": osm,
+    "Satellite": satellite
 }).addTo(map);
 
-// ======================================
-// 3. DATA LAYERS
-// ======================================
+// ------------------------------------
+// DATA FILE PATHS
+// All files are in GitHub ROOT
+// ------------------------------------
 
-let vacantLayer = L.featureGroup().addTo(map);
-let dsdLayer = L.featureGroup();
-let roadLayer = L.featureGroup();
-let railLayer = L.featureGroup();
-let busLayer = L.featureGroup();
-let populationLayer = L.featureGroup();
+const FILES = {
+    vacant: "vacant_land.geojson",
+    dsd: "colombo_dsd.geojson",
+    roads: "roads.geojson",
+    railway: "railway_stations.geojson",
+    bus: "bus_terminals.geojson"
+};
+
+// ------------------------------------
+// GLOBAL LAYERS
+// ------------------------------------
+
+let vacantLayer = null;
+let dsdLayer = null;
+let roadsLayer = null;
+let railwayLayer = null;
+let busLayer = null;
 
 let vacantFeatures = [];
-let dsdFeatures = [];
+let totalHectares = 0;
 
-// ======================================
-// 4. HELPER FUNCTIONS
-// ======================================
+let layerData = {
+    vacant: null,
+    dsd: null,
+    roads: null,
+    railway: null,
+    bus: null
+};
 
-function fieldValue(properties, field, alternatives=[]) {
-  const keys = [field,...alternatives];
-  for (const key of keys) {
-    if (properties[key] !== undefined &&
-        properties[key] !== null &&
-        properties[key] !== "") {
-      return properties[key];
+// ------------------------------------
+// PARCEL AREA FIELD
+// ------------------------------------
+
+const AREA_FIELD = "area_hecta";
+
+// Area categories in hectares
+const SMALL_LIMIT = 0.10;
+const MEDIUM_LIMIT = 0.50;
+
+function getParcelArea(properties) {
+    const value = Number(properties[AREA_FIELD]);
+    return Number.isFinite(value) ? value : 0;
+}
+
+function parcelColor(area) {
+    if (area <= SMALL_LIMIT) return "#f1c40f";
+    if (area <= MEDIUM_LIMIT) return "#e67e22";
+    return "#c0392b";
+}
+
+function parcelCategory(area) {
+    if (area <= SMALL_LIMIT) return "Small";
+    if (area <= MEDIUM_LIMIT) return "Medium";
+    return "Large";
+}
+
+// ------------------------------------
+// LOAD GEOJSON
+// ------------------------------------
+
+async function loadGeoJSON(filename) {
+    const response = await fetch(filename);
+
+    if (!response.ok) {
+        throw new Error(
+            filename + " - HTTP " + response.status
+        );
     }
-  }
-  return null;
+
+    return await response.json();
 }
 
-function parcelArea(feature) {
-  const stored = Number(
-    fieldValue(feature.properties,AREA_FIELD,["area_ha","AREA_HA","Area"])
-  );
+// ------------------------------------
+// VACANT LAND
+// ------------------------------------
 
-  if (Number.isFinite(stored) && stored > 0) return stored;
+async function loadVacantLand() {
 
-  return turf.area(feature)/10000;
+    try {
+        const data = await loadGeoJSON(FILES.vacant);
+
+        layerData.vacant = data;
+        vacantFeatures = data.features || [];
+
+        vacantLayer = L.geoJSON(data, {
+
+            style: function(feature) {
+                const area = getParcelArea(feature.properties || {});
+
+                return {
+                    color: "#34495e",
+                    weight: 1,
+                    fillColor: parcelColor(area),
+                    fillOpacity: 0.72
+                };
+            },
+
+            onEachFeature: function(feature, layer) {
+
+                const p = feature.properties || {};
+                const area = getParcelArea(p);
+
+                let popup = `
+                    <div style="min-width:190px">
+                    <h3 style="margin:0 0 10px;color:#176b62">
+                    Vacant Land Parcel
+                    </h3>
+                    <b>Object ID:</b> ${p.objectid ?? p.objectid_1 ?? "N/A"}<br>
+                    <b>Description:</b> ${p.descriptio ?? "Vacant Land"}<br>
+                    <b>Local Authority:</b> ${p.local_auth ?? "N/A"}<br>
+                    <b>Area:</b> ${area.toFixed(4)} ha<br>
+                    <b>Category:</b> ${parcelCategory(area)}
+                    </div>
+                `;
+
+                layer.bindPopup(popup);
+            }
+
+        });
+
+        vacantLayer.addTo(map);
+
+        totalHectares = vacantFeatures.reduce(
+            (sum, feature) => sum + getParcelArea(feature.properties || {}),
+            0
+        );
+
+        document.getElementById("parcelCount").textContent =
+            vacantFeatures.length;
+
+        document.getElementById("totalArea").textContent =
+            totalHectares.toFixed(2);
+
+        if (vacantLayer.getBounds().isValid()) {
+            map.fitBounds(vacantLayer.getBounds(), { padding: [20, 20] });
+        }
+
+        document.getElementById("vacantToggle").checked = true;
+
+        return true;
+
+    } catch (error) {
+        console.error(error);
+        setStatus("Vacant land error: " + error.message);
+        return false;
+    }
 }
 
-function parcelColour(area) {
-  if (area <= SMALL_LIMIT) return "#a5d6a7";
-  if (area <= MEDIUM_LIMIT) return "#43a66b";
-  return "#176548";
+// ------------------------------------
+// DSD BOUNDARIES
+// ------------------------------------
+
+async function loadDSD() {
+
+    try {
+        const data = await loadGeoJSON(FILES.dsd);
+
+        layerData.dsd = data;
+
+        dsdLayer = L.geoJSON(data, {
+            style: {
+                color: "#2471a3",
+                weight: 2,
+                fillColor: "#5dade2",
+                fillOpacity: 0.08
+            },
+            onEachFeature: function(feature, layer) {
+                const p = feature.properties || {};
+
+                layer.bindPopup(
+                    "<b>DSD:</b> " +
+                    (p.DSD_N || p.DSD_NAME || p.dsd_name || p.name || "DSD")
+                );
+            }
+        });
+
+        document.getElementById("dsdCount").textContent =
+            (data.features || []).length;
+
+        return true;
+
+    } catch (error) {
+        console.error(error);
+        setStatus("DSD boundary error: " + error.message);
+        return false;
+    }
 }
 
-// ======================================
-// 5. VACANT LAND POPUPS
-// ======================================
+// ------------------------------------
+// OPTIONAL TRANSPORT LAYERS
+// ------------------------------------
 
-function vacantPopup(feature) {
-  const p = feature.properties;
+async function loadTransport(filename, type) {
 
-  const dsd = fieldValue(p,DSD_FIELD,["DSD_NAME","ds_name","dsd"]);
-  const gn = fieldValue(p,GN_FIELD,["GN_NAME","gn_name","gn_division"]);
-  const area = parcelArea(feature);
+    try {
+        const data = await loadGeoJSON(filename);
+        layerData[type] = data;
 
-  return `
-  <div style="min-width:200px">
-    <h3 style="color:#176548">Vacant Land Parcel</h3>
-    <b>Parcel area:</b> ${area.toFixed(3)} ha<br>
-    <b>DSD:</b> ${dsd ?? "Not available"}<br>
-    <b>GN Division:</b> ${gn ?? "Not available"}<br>
-    <b>Description:</b> ${fieldValue(p,"descriptio") ?? "Vacant Land"}
-  </div>`;
+        let style = {};
+        let pointStyle = {};
+
+        if (type === "roads") {
+            style = {
+                color: "#555555",
+                weight: 2,
+                opacity: 0.7
+            };
+        }
+
+        if (type === "railway") {
+            pointStyle = {
+                radius: 7,
+                fillColor: "#8e44ad",
+                color: "#ffffff",
+                weight: 2,
+                fillOpacity: 1
+            };
+        }
+
+        if (type === "bus") {
+            pointStyle = {
+                radius: 7,
+                fillColor: "#16a085",
+                color: "#ffffff",
+                weight: 2,
+                fillOpacity: 1
+            };
+        }
+
+        const layer = L.geoJSON(data, {
+
+            style: type === "roads" ? style : undefined,
+
+            pointToLayer: function(feature, latlng) {
+                return L.circleMarker(latlng, pointStyle);
+            },
+
+            onEachFeature: function(feature, layer) {
+                const p = feature.properties || {};
+
+                layer.bindPopup(
+                    "<b>" + type.toUpperCase() + "</b><br>" +
+                    Object.entries(p).slice(0, 6)
+                    .map(([key, value]) => key + ": " + value)
+                    .join("<br>")
+                );
+            }
+        });
+
+        return layer;
+
+    } catch (error) {
+        console.error(error);
+        setStatus(type + " error: " + error.message);
+        return null;
+    }
 }
 
-// ======================================
-// 6. LOAD VACANT LAND DATA
-// ======================================
+// ------------------------------------
+// SAFE LAYER TOGGLE FUNCTIONS
+// ------------------------------------
 
-function loadVacant() {
- fetch("vacant_land.geojson")
- .then(r=>{
-   if(!r.ok) throw new Error("vacant_land.geojson not found");
-   return r.json();
- })
- .then(data=>{
-   vacantFeatures = data.features || [];
+function bindToggle(id, getLayer) {
 
-   vacantLayer = L.geoJSON(data,{
-     style:f=>({
-       color:"#245c40",
-       weight:1,
-       fillColor:parcelColour(parcelArea(f)),
-       fillOpacity:0.75
-     }),
-     onEachFeature:(f,l)=>l.bindPopup(vacantPopup(f))
-   }).addTo(map);
+    document.getElementById(id).addEventListener("change", function(e) {
 
-   map.fitBounds(vacantLayer.getBounds());
-   updateStats();
-   setStatus("Vacant land data loaded successfully.");
- })
- .catch(e=>setStatus("Vacant land error: "+e.message));
+        const layer = getLayer();
+
+        if (!layer) {
+            setStatus("This layer has not loaded successfully.");
+            e.target.checked = false;
+            return;
+        }
+
+        if (e.target.checked) {
+            layer.addTo(map);
+        } else {
+            map.removeLayer(layer);
+        }
+    });
 }
 
-// ======================================
-// 7. LOAD DSD AND POPULATION DATA
-// ======================================
+bindToggle("vacantToggle", () => vacantLayer);
+bindToggle("dsdToggle", () => dsdLayer);
+bindToggle("roadsToggle", () => roadsLayer);
+bindToggle("railToggle", () => railwayLayer);
+bindToggle("busToggle", () => busLayer);
 
-function loadDSD() {
- fetch("data/colombo_dsd.geojson")
- .then(r=>{
-   if(!r.ok) throw new Error("DSD file not found");
-   return r.json();
- })
- .then(data=>{
-   dsdFeatures = data.features || [];
+// ------------------------------------
+// PARCEL SIZE FILTERS
+// ------------------------------------
 
-   dsdLayer = L.geoJSON(data,{
-     style:{
-       color:"#263f35",
-       weight:1.5,
-       fillOpacity:0
-     },
-     onEachFeature:(f,l)=>{
-       const name=fieldValue(f.properties,DSD_FIELD,["DSD_NAME","ds_name"]);
-       l.bindPopup("<b>DSD:</b> "+(name ?? "Not available"));
-     }
-   });
+function applyParcelFilters() {
 
-   populationLayer = L.geoJSON(data,{
-     style:f=>{
-       const value=Number(fieldValue(f.properties,POP_FIELD,["population_density","density"]));
-       return {
-         color:"#7d3b21",
-         weight:1,
-         fillColor:populationColour(value),
-         fillOpacity:0.65
-       };
-     },
-     onEachFeature:(f,l)=>{
-       const name=fieldValue(f.properties,DSD_FIELD,["DSD_NAME","ds_name"]);
-       const density=fieldValue(f.properties,POP_FIELD,["population_density","density"]);
-       l.bindPopup("<b>"+(name ?? "DSD")+"</b><br>Population density: "+(density ?? "Not available"));
-     }
-   });
+    if (!vacantLayer) return;
 
-   updateStats();
-   setStatus("Vacant land and DSD data loaded.");
- })
- .catch(e=>setStatus("DSD layer not loaded: "+e.message));
+    const showSmall = document.getElementById("smallToggle").checked;
+    const showMedium = document.getElementById("mediumToggle").checked;
+    const showLarge = document.getElementById("largeToggle").checked;
+
+    vacantLayer.eachLayer(function(layer) {
+
+        const area = getParcelArea(layer.feature.properties || {});
+
+        const visible =
+            (area <= SMALL_LIMIT && showSmall) ||
+            (area > SMALL_LIMIT && area <= MEDIUM_LIMIT && showMedium) ||
+            (area > MEDIUM_LIMIT && showLarge);
+
+        if (visible) {
+            if (!map.hasLayer(layer)) vacantLayer.addLayer(layer);
+        } else {
+            vacantLayer.removeLayer(layer);
+        }
+    });
 }
 
-function populationColour(v) {
- if(!Number.isFinite(v)) return "#cccccc";
- return v>15000 ? "#e31a1c" :
-        v>10000 ? "#fd8d3c" :
-        v>5000 ? "#fecc5c" : "#ffffb2";
-}
-
-// ======================================
-// 8. OPTIONAL TRANSPORT LAYERS
-// ======================================
-
-function loadOptional(file,layer,style,point=false) {
- fetch("data/"+file)
- .then(r=>{
-   if(!r.ok) throw new Error(file+" not found");
-   return r.json();
- })
- .then(data=>{
-   if(point) {
-     layer = L.geoJSON(data,{
-       pointToLayer:(f,latlng)=>L.circleMarker(latlng,{
-         radius:6,color:"#173e32",fillColor:style,fillOpacity:0.9
-       })
-     });
-   } else {
-     layer = L.geoJSON(data,{style:style});
-   }
-
-   if(file==="roads.geojson") roadLayer=layer;
-   if(file==="railway_stations.geojson") railLayer=layer;
-   if(file==="bus_terminals.geojson") busLayer=layer;
- })
- .catch(e=>console.warn(e.message));
-}
-
-// ======================================
-// 9. DASHBOARD STATISTICS
-// ======================================
-
-function updateStats() {
- if(!vacantFeatures.length) return;
-
- const areas=vacantFeatures.map(parcelArea);
- const total=areas.reduce((a,b)=>a+b,0);
- const largest=Math.max(...areas);
-
- document.getElementById("parcelCount").innerText=
-   vacantFeatures.length.toLocaleString();
-
- document.getElementById("totalArea").innerText=
-   total.toFixed(2)+" ha";
-
- document.getElementById("largestParcel").innerText=
-   largest.toFixed(2)+" ha";
-
- document.getElementById("dsdCount").innerText=
-   dsdFeatures.length || "--";
-}
-
-// ======================================
-// 10. SEARCH
-// ======================================
-
-function searchMap() {
- const q=document.getElementById("searchBox").value.toLowerCase().trim();
- if(!q) return;
-
- let found=null;
-
- for(const f of vacantFeatures) {
-   const p=f.properties;
-   const dsd=String(fieldValue(p,DSD_FIELD,["DSD_NAME","ds_name"]) || "").toLowerCase();
-   const gn=String(fieldValue(p,GN_FIELD,["GN_NAME","gn_name"]) || "").toLowerCase();
-
-   if(dsd.includes(q) || gn.includes(q)) {
-     found=f;
-     break;
-   }
- }
-
- if(found) {
-   const bounds=L.geoJSON(found).getBounds();
-   map.fitBounds(bounds,{padding:[40,40]});
-
-   vacantLayer.eachLayer(l=>{
-     if(l.feature===found) l.openPopup();
-   });
-   return;
- }
-
- const division=dsdFeatures.find(f=>{
-   const name=String(fieldValue(f.properties,DSD_FIELD,["DSD_NAME","ds_name"]) || "").toLowerCase();
-   return name.includes(q);
- });
-
- if(division) {
-   map.fitBounds(L.geoJSON(division).getBounds());
-   return;
- }
-
- alert("No matching parcel or DSD found.");
-}
-
-function resetMap() {
- if(vacantLayer.getLayers().length) map.fitBounds(vacantLayer.getBounds());
- document.getElementById("searchBox").value="";
-}
-
-// ======================================
-// 11. LAYER CONTROLS
-// ======================================
-
-function toggleLayer(id,layer) {
- document.getElementById(id).addEventListener("change",e=>{
-   if(e.target.checked) map.addLayer(layer);
-   else map.removeLayer(layer);
- });
-}
-
-toggleLayer("vacantToggle",vacantLayer);
-toggleLayer("dsdToggle",dsdLayer);
-toggleLayer("populationToggle",populationLayer);
-toggleLayer("roadToggle",roadLayer);
-toggleLayer("railToggle",railLayer);
-toggleLayer("busToggle",busLayer);
-
-// ======================================
-// 12. STATUS AND START
-// ======================================
-
-function setStatus(message) {
- document.getElementById("status").innerText=message;
-}
-
-loadVacant();
-loadDSD();
-
-loadOptional("roads.geojson",roadLayer,{
- color:"#777777",weight:2
+["smallToggle", "mediumToggle", "largeToggle"].forEach(id => {
+    document.getElementById(id).addEventListener("change", applyParcelFilters);
 });
 
-loadOptional("railway_stations.geojson",railLayer,"#e67e22",true);
-loadOptional("bus_terminals.geojson",busLayer,"#2874a6",true);
+// ------------------------------------
+// SEARCH PARCEL
+// ------------------------------------
+
+function searchParcel() {
+
+    const searchValue = document
+        .getElementById("searchInput")
+        .value.trim()
+        .toLowerCase();
+
+    if (!searchValue || !vacantLayer) {
+        alert("Enter a parcel ID first.");
+        return;
+    }
+
+    let found = null;
+
+    vacantLayer.eachLayer(function(layer) {
+
+        const p = layer.feature.properties || {};
+
+        const id = String(p.objectid ?? p.objectid_1 ?? "").toLowerCase();
+
+        if (id === searchValue) {
+            found = layer;
+        }
+    });
+
+    if (found) {
+        if (!map.hasLayer(vacantLayer)) vacantLayer.addTo(map);
+
+        map.fitBounds(found.getBounds(), { maxZoom: 17 });
+        found.openPopup();
+    } else {
+        alert("Parcel not found. Check the Object ID.");
+    }
+}
+
+// ------------------------------------
+// RESET MAP
+// ------------------------------------
+
+function resetMap() {
+
+    if (vacantLayer && !map.hasLayer(vacantLayer)) {
+        vacantLayer.addTo(map);
+    }
+
+    if (vacantLayer && vacantLayer.getBounds().isValid()) {
+        map.fitBounds(vacantLayer.getBounds());
+    } else {
+        map.setView([6.9271, 79.8612], 11);
+    }
+
+    document.getElementById("searchInput").value = "";
+}
+
+// ------------------------------------
+// STATUS MESSAGE
+// ------------------------------------
+
+function setStatus(message) {
+    document.getElementById("status").textContent = message;
+}
+
+// ------------------------------------
+// LOAD ALL LAYERS
+// ------------------------------------
+
+async function initializeMap() {
+
+    setStatus("Loading vacant land data...");
+
+    const vacantOK = await loadVacantLand();
+
+    setStatus("Loading DSD boundaries...");
+
+    const dsdOK = await loadDSD();
+
+    setStatus("Loading transport layers...");
+
+    roadsLayer = await loadTransport(FILES.roads, "roads");
+    railwayLayer = await loadTransport(FILES.railway, "railway");
+    busLayer = await loadTransport(FILES.bus, "bus");
+
+    const successful = [
+        vacantOK,
+        dsdOK,
+        !!roadsLayer,
+        !!railwayLayer,
+        !!busLayer
+    ].filter(Boolean).length;
+
+    document.getElementById("dataStatus").textContent =
+        successful + "/5";
+
+    setStatus(
+        "Loaded " + successful + " of 5 data layers. " +
+        "Use the checkboxes to display optional layers."
+    );
+}
+
+initializeMap();
 
 </script>
 </body>
 </html>
-
