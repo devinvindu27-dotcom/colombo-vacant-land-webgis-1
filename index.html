@@ -30,6 +30,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
 }
 
 .brand {
@@ -47,6 +48,24 @@ body {
 
 .location {
     font-size: 15px;
+}
+
+/* NEW REPORT TAB */
+
+.report-tab-btn {
+    background: #e6f0e8;
+    color: #174d32;
+    border: 1px solid #b5d0bd;
+    padding: 11px 17px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.report-tab-btn:hover {
+    background: #cfe4d4;
 }
 
 /* HERO */
@@ -231,6 +250,133 @@ footer {
     font-size: 12px;
 }
 
+/* NEW REPORT PANEL */
+
+.report-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.report-panel {
+    background: white;
+    width: 100%;
+    max-width: 540px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 25px;
+    border-radius: 13px;
+    box-shadow: 0 5px 30px rgba(0,0,0,.3);
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #e5ece7;
+    padding-bottom: 14px;
+}
+
+.report-header h2 {
+    margin: 0;
+    color: #174d32;
+    font-size: 22px;
+}
+
+.close-report {
+    border: none;
+    background: none;
+    font-size: 30px;
+    color: #555;
+    cursor: pointer;
+}
+
+.report-description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #64746c;
+    margin: 15px 0;
+}
+
+.report-panel h3 {
+    font-size: 16px;
+    color: #174d32;
+    margin: 22px 0 10px;
+}
+
+.report-panel label {
+    display: block;
+    font-size: 13px;
+    margin: 12px 0 6px;
+    font-weight: bold;
+}
+
+.report-panel input {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #d6e1da;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.report-action {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 7px;
+    background: #236b45;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.report-action:hover {
+    background: #174d32;
+}
+
+.report-action.secondary {
+    background: #66796f;
+}
+
+.report-action.google {
+    background: #d49b22;
+}
+
+.report-action.google:hover {
+    background: #b98415;
+}
+
+.location-result {
+    background: #f1f5f2;
+    border: 1px solid #d6e1da;
+    padding: 12px;
+    border-radius: 7px;
+    margin-top: 15px;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.location-result a {
+    color: #176b4d;
+    font-weight: bold;
+}
+
+.report-note {
+    font-size: 12px;
+    color: #68776e;
+    line-height: 1.5;
+    margin-top: 12px;
+}
+
 /* RESPONSIVE */
 
 @media(max-width: 900px) {
@@ -259,6 +405,22 @@ footer {
     .hero h1 {
         font-size: 25px;
     }
+
+    .topbar {
+        flex-wrap: wrap;
+    }
+
+    .brand {
+        font-size: 19px;
+    }
+
+    .report-tab-btn {
+        width: 100%;
+    }
+
+    .report-panel {
+        padding: 18px;
+    }
 }
 </style>
 </head>
@@ -276,6 +438,11 @@ footer {
     <div class="location">
         COLOMBO DISTRICT | SRI LANKA
     </div>
+
+    <!-- NEW REPORT TAB -->
+    <button class="report-tab-btn" id="reportTabBtn">
+        📍 Report Vacant Land
+    </button>
 </header>
 
 <!-- HERO SECTION -->
@@ -428,6 +595,95 @@ footer {
     </section>
 
 </main>
+
+<!-- NEW VACANT LAND REPORT PANEL -->
+
+<div class="report-overlay" id="reportOverlay">
+
+    <div class="report-panel">
+
+        <div class="report-header">
+            <h2>📍 Report Vacant Land</h2>
+
+            <button
+                class="close-report"
+                id="closeReportPanel"
+                aria-label="Close"
+            >×</button>
+        </div>
+
+        <p class="report-description">
+            Help us identify vacant and underutilized lands in Colombo
+            District. Select the land location using the map, your GPS
+            location or manual coordinates.
+        </p>
+
+        <h3>01. Select Land Location</h3>
+
+        <button class="report-action" id="mapLocationBtn">
+            📍 Select Location on Website Map
+        </button>
+
+        <button class="report-action" id="gpsLocationBtn">
+            Use My Current GPS Location
+        </button>
+
+        <h3>02. Enter Coordinates Manually</h3>
+
+        <label for="reportLat">Latitude</label>
+
+        <input
+            type="number"
+            id="reportLat"
+            step="any"
+            placeholder="Example: 6.9271000"
+        >
+
+        <label for="reportLng">Longitude</label>
+
+        <input
+            type="number"
+            id="reportLng"
+            step="any"
+            placeholder="Example: 79.8612000"
+        >
+
+        <button class="report-action" id="manualLocationBtn">
+            Update Location
+        </button>
+
+        <div class="location-result" id="locationResult">
+            <b>Selected location:</b><br>
+            No location selected yet.
+        </div>
+
+        <button class="report-action secondary" id="copyCoordinatesBtn">
+            Copy Coordinates
+        </button>
+
+        <button class="report-action secondary" id="copyMapLinkBtn">
+            Copy Google Maps Location Link
+        </button>
+
+        <h3>03. Submit Your Report</h3>
+
+        <p class="report-description">
+            After selecting the location, open the reporting form and
+            provide the details about the vacant land.
+        </p>
+
+        <button class="report-action google" id="openGoogleFormBtn">
+            Open Vacant Land Google Form ↗
+        </button>
+
+        <p class="report-note">
+            Note: Keep your selected coordinates available when completing
+            the form. Coordinate auto-filling can be enabled once the
+            Google Form's pre-filled field IDs are added.
+        </p>
+
+    </div>
+</div>
 
 <footer>
     Colombo Vacant Land Web GIS | Urban Land Management & Spatial Planning
@@ -733,7 +989,6 @@ async function loadDSD() {
             }
         });
 
-        // Count unique DSD names if a name field exists.
         const nameFields = [
             "DSD_N", "DSD_NAME", "dsd_name",
             "DSD", "name", "NAME"
@@ -1083,7 +1338,447 @@ function resetMap() {
 }
 
 // =================================================
-// 12. INITIALIZE ALL MAP DATA
+// 12. NEW REPORT VACANT LAND FUNCTIONALITY
+// =================================================
+
+// Google Form URL
+
+const GOOGLE_FORM_URL =
+"https://docs.google.com/forms/d/e/1FAIpQLSek5dj1t04fRUBsQsvJAPpxRfGHsxG6tnxfAiiJMslW52yYIQ/viewform?usp=sharing";
+
+// OPTIONAL: Add the numeric Google Forms entry IDs here
+// after generating a pre-filled link from your Google Form.
+//
+// Example:
+// latitude: "123456789"
+// longitude: "987654321"
+// mapsLink: "1122334455"
+//
+// Leave empty until you have the exact IDs.
+
+const FORM_ENTRY_IDS = {
+    latitude: "",
+    longitude: "",
+    mapsLink: ""
+};
+
+// Report location variables
+
+let reportLatitude = null;
+let reportLongitude = null;
+
+let reportMarker = null;
+
+let selectingReportLocation = false;
+
+
+// Open report panel
+
+document.getElementById("reportTabBtn").addEventListener("click", function() {
+
+    document.getElementById("reportOverlay").style.display = "flex";
+
+});
+
+
+// Close report panel
+
+function closeReportPanel() {
+
+    document.getElementById("reportOverlay").style.display = "none";
+
+    selectingReportLocation = false;
+}
+
+document.getElementById("closeReportPanel").addEventListener(
+    "click",
+    closeReportPanel
+);
+
+
+// Close when clicking outside panel
+
+document.getElementById("reportOverlay").addEventListener("click", function(event) {
+
+    if (event.target === this) {
+        closeReportPanel();
+    }
+
+});
+
+
+// Update selected location
+
+function updateReportLocation(lat, lng) {
+
+    lat = Number(lat);
+    lng = Number(lng);
+
+    if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lng) ||
+        lat < -90 ||
+        lat > 90 ||
+        lng < -180 ||
+        lng > 180
+    ) {
+
+        alert("Please provide valid latitude and longitude coordinates.");
+
+        return;
+    }
+
+    reportLatitude = lat;
+    reportLongitude = lng;
+
+    document.getElementById("reportLat").value =
+        lat.toFixed(7);
+
+    document.getElementById("reportLng").value =
+        lng.toFixed(7);
+
+    // Remove previous marker
+
+    if (reportMarker) {
+        map.removeLayer(reportMarker);
+    }
+
+    // Add selected location marker
+
+    reportMarker = L.marker([lat, lng], {
+        draggable: true
+    }).addTo(map);
+
+    reportMarker.bindPopup(
+        "<b>Reported Vacant Land Location</b><br>" +
+        "Latitude: " + lat.toFixed(7) + "<br>" +
+        "Longitude: " + lng.toFixed(7)
+    ).openPopup();
+
+    // Allow users to adjust the marker by dragging it
+
+    reportMarker.on("dragend", function(event) {
+
+        const position = event.target.getLatLng();
+
+        updateReportLocation(
+            position.lat,
+            position.lng
+        );
+
+    });
+
+    // Create Google Maps location link
+
+    const googleMapsLink =
+        "https://www.google.com/maps?q=" + lat + "," + lng;
+
+    document.getElementById("locationResult").innerHTML = `
+        <b>Selected location:</b><br>
+        Latitude: ${lat.toFixed(7)}<br>
+        Longitude: ${lng.toFixed(7)}<br>
+        <a href="${googleMapsLink}" target="_blank" rel="noopener">
+            View selected location on Google Maps
+        </a>
+    `;
+
+    // Zoom to selected location
+
+    map.setView([lat, lng], 17);
+
+}
+
+
+// =================================================
+// 12A. SELECT LOCATION FROM WEBSITE MAP
+// =================================================
+
+document.getElementById("mapLocationBtn").addEventListener("click", function() {
+
+    selectingReportLocation = true;
+
+    // Close panel so the user can click the map
+
+    document.getElementById("reportOverlay").style.display = "none";
+
+    alert(
+        "Please click on the map to mark the vacant land location."
+    );
+
+});
+
+
+// Detect map click
+
+map.on("click", function(event) {
+
+    if (!selectingReportLocation) return;
+
+    const lat = event.latlng.lat;
+    const lng = event.latlng.lng;
+
+    selectingReportLocation = false;
+
+    updateReportLocation(lat, lng);
+
+    // Reopen reporting panel
+
+    document.getElementById("reportOverlay").style.display = "flex";
+
+});
+
+
+// =================================================
+// 12B. CURRENT GPS LOCATION
+// =================================================
+
+document.getElementById("gpsLocationBtn").addEventListener("click", function() {
+
+    if (!navigator.geolocation) {
+
+        alert("GPS location is not supported by your browser.");
+
+        return;
+    }
+
+    if (!window.isSecureContext) {
+
+        alert(
+            "GPS requires a secure website connection (HTTPS). " +
+            "Please use your GitHub Pages website."
+        );
+
+        return;
+    }
+
+    const button = document.getElementById("gpsLocationBtn");
+
+    button.textContent = "Getting your GPS location...";
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            updateReportLocation(lat, lng);
+
+            button.textContent = "Use My Current GPS Location";
+
+        },
+
+        function(error) {
+
+            button.textContent = "Use My Current GPS Location";
+
+            let message = "Unable to get your location.";
+
+            if (error.code === 1) {
+                message = "Location permission denied. Please allow location access in your browser.";
+            }
+
+            if (error.code === 2) {
+                message = "Your current location is unavailable.";
+            }
+
+            if (error.code === 3) {
+                message = "GPS request timed out. Please try again.";
+            }
+
+            alert(message);
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+
+    );
+
+});
+
+
+// =================================================
+// 12C. MANUAL COORDINATE ENTRY
+// =================================================
+
+document.getElementById("manualLocationBtn").addEventListener("click", function() {
+
+    const lat = parseFloat(
+        document.getElementById("reportLat").value
+    );
+
+    const lng = parseFloat(
+        document.getElementById("reportLng").value
+    );
+
+    if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lng) ||
+        lat < -90 ||
+        lat > 90 ||
+        lng < -180 ||
+        lng > 180
+    ) {
+
+        alert("Please enter valid latitude and longitude values.");
+
+        return;
+    }
+
+    updateReportLocation(lat, lng);
+
+});
+
+
+// =================================================
+// 12D. COPY COORDINATES
+// =================================================
+
+document.getElementById("copyCoordinatesBtn").addEventListener("click", async function() {
+
+    if (reportLatitude === null || reportLongitude === null) {
+
+        alert("Please select a location first.");
+
+        return;
+    }
+
+    const coordinates =
+        reportLatitude.toFixed(7) + ", " +
+        reportLongitude.toFixed(7);
+
+    try {
+
+        await navigator.clipboard.writeText(coordinates);
+
+        alert("Coordinates copied successfully.");
+
+    } catch (error) {
+
+        alert("Unable to copy coordinates. Please copy them manually from the panel.");
+
+    }
+
+});
+
+
+// =================================================
+// 12E. COPY GOOGLE MAPS LOCATION LINK
+// =================================================
+
+document.getElementById("copyMapLinkBtn").addEventListener("click", async function() {
+
+    if (reportLatitude === null || reportLongitude === null) {
+
+        alert("Please select a location first.");
+
+        return;
+    }
+
+    const googleMapsLink =
+        "https://www.google.com/maps?q=" +
+        reportLatitude + "," + reportLongitude;
+
+    try {
+
+        await navigator.clipboard.writeText(googleMapsLink);
+
+        alert("Google Maps location link copied successfully.");
+
+    } catch (error) {
+
+        alert("Unable to copy the link. Please use the Google Maps link shown above.");
+
+    }
+
+});
+
+
+// =================================================
+// 12F. OPEN GOOGLE FORM
+// =================================================
+
+document.getElementById("openGoogleFormBtn").addEventListener("click", function() {
+
+    if (reportLatitude === null || reportLongitude === null) {
+
+        alert("Please select a vacant land location before opening the form.");
+
+        return;
+    }
+
+    const googleMapsLink =
+        "https://www.google.com/maps?q=" +
+        reportLatitude + "," + reportLongitude;
+
+    // Start with the normal Google Form URL
+
+    const formURL = new URL(GOOGLE_FORM_URL);
+
+    // If exact Google Form entry IDs have been added,
+    // automatically pre-fill the selected coordinates.
+
+    let prefillAvailable = false;
+
+    if (FORM_ENTRY_IDS.latitude) {
+
+        formURL.searchParams.set(
+            "entry." + FORM_ENTRY_IDS.latitude,
+            reportLatitude.toFixed(7)
+        );
+
+        prefillAvailable = true;
+    }
+
+    if (FORM_ENTRY_IDS.longitude) {
+
+        formURL.searchParams.set(
+            "entry." + FORM_ENTRY_IDS.longitude,
+            reportLongitude.toFixed(7)
+        );
+
+        prefillAvailable = true;
+    }
+
+    if (FORM_ENTRY_IDS.mapsLink) {
+
+        formURL.searchParams.set(
+            "entry." + FORM_ENTRY_IDS.mapsLink,
+            googleMapsLink
+        );
+
+        prefillAvailable = true;
+    }
+
+    if (prefillAvailable) {
+
+        formURL.searchParams.set("usp", "pp_url");
+
+    }
+
+    // Open Google Form in a new tab
+
+    window.open(formURL.toString(), "_blank");
+
+    if (!prefillAvailable) {
+
+        alert(
+            "Google Form opened. Please copy the selected coordinates " +
+            "from this website and enter them in the Latitude and " +
+            "Longitude questions of the form."
+        );
+
+    }
+
+});
+
+
+// =================================================
+// 13. INITIALIZE ALL MAP DATA
 // =================================================
 
 async function initializeMap() {
@@ -1138,3 +1833,4 @@ initializeMap();
 
 </body>
 </html>
+
